@@ -1,4 +1,5 @@
 import card as crd
+import numpy as np
 
 class Deck:
   def __init__(self):
@@ -11,12 +12,24 @@ class Deck:
     suits = ["H","D","S","C"]
     for i in range(4):
       for j in range(13):
-        c = crd.Card(names[j],suits[i],values[j])
-        self.__cards.append(c)
+        card = crd.Card(names[j],suits[i],values[j])
+        self.__cards.append(card)
+    np.random.shuffle(self.__cards)
 
   def display(self):
     for c in self.__cards:
       c.display()
+
+  def add(card):
+    self.__cards.append(card)
+
+  def add_cards(cards):
+    self.__cards.appends(cards)
+    np.random.shuffle(self.__cards)
+
+  def remove():
+    card = self.cards.pop(0)
+    return card
 
 d = Deck()
 d.display()
