@@ -2,7 +2,7 @@ import card as crd
 
 class Deck:
   def __init__(self):
-    self.cards = []
+    self.__cards = []
     self.__build()
 
   def __build(self):
@@ -12,10 +12,10 @@ class Deck:
     for i in range(4):
       for j in range(13):
         c = crd.Card(names[j],suits[i],values[j])
-        self.cards.append(c)
+        self.__cards.append(c)
 
   def display(self):
-    for c in self.cards:
+    for c in self.__cards:
       c.display()
 
 d = Deck()
