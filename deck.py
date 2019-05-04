@@ -12,8 +12,9 @@ class Deck:
     suits = ["H","D","S","C"]
     for i in range(4):
       for j in range(13):
-        c = crd.Card(names[j],suits[i],values[j])
-        self.__cards.append(c)
+        card = crd.Card(names[j],suits[i],values[j])
+        self.__cards.append(card)
+    np.random.shuffle(self.__cards)
 
   def display(self):
     for c in self.__cards:
@@ -28,6 +29,13 @@ class Deck:
 
   def shuffle(self):
     np.random.shuffle(self.__cards) 
+
+  def add(card):
+    self.__cards.append(card)
+
+  def add_cards(cards):
+    self.__cards.append(cards)
+    np.random.shuffle(self.__cards)
 
 d = Deck()
 d.display()
