@@ -6,6 +6,8 @@ class Card:
     self.__suit = suit
     self.__value = value
 
+  def is_a(name):
+    return self.__name == name
 
   # Displays card
   def display(self):
@@ -31,6 +33,15 @@ class Card:
   def get_suit_val(self):
     return self.__suit_val
 
+  def __str__(self):
+    return self.__name + ":" + self.__suit
+
+  def __repr__(self):
+    return str(self)
+
+  def __hash__(self):
+    return hash(self.__value)
+
   def __eq__(self, other):
     return True if self.__value == other.__value else False
 
@@ -51,6 +62,8 @@ class Card:
 
 c1 = Card("2", "H", 2)
 c2 = Card("2", "D", 2)
+print(c1)
+print(c2)
 print(c1 == c2)
 print(c1 < c2)
 print(c1 <= c2)
