@@ -20,6 +20,16 @@ class Deck:
     for c in self.__cards:
       c.display()
 
+  def deal_card(self):
+    a_card = self.__cards.pop(0)
+    #for testing purposes:
+    print ("Popped: ")
+    a_card.display()
+    return a_card
+
+  def shuffle(self):
+    np.random.shuffle(self.__cards) 
+
   def add(card):
     self.__cards.append(card)
 
@@ -27,8 +37,8 @@ class Deck:
     self.__cards.append(cards)
     np.random.shuffle(self.__cards)
 
-  def remove():
-    return self.__cards.pop(0)
-
 d = Deck()
 d.display()
+
+d.shuffle()
+d.deal_card()
