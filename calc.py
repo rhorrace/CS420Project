@@ -4,120 +4,87 @@ from scipy import stats
 
 def partition(cards, l, h):
   i = l - 1
-  pivot = card[h]
+  pivot = cards[h]
   for j in range(l, h):
-    if(cards[i] <= pivot):
+    if(cards[j] <= pivot):
       i += 1
-      arr[i], arr[j] = arr[j], arr[i]
-  arr[i+1], arr[h] = arr[h], arr[i+1]
+      cards[i], cards[j] = cards[j], cards[i]
+  cards[i+1], cards[h] = cards[h], cards[i+1]
   return i + 1
 
-def sort(card, l, h):
+def sort(cards, l, h):
   if(l < h):
     p = partition(cards, l ,h)
-    quicksort(cards,l,p-1)
-    quicksort(cards, p+1, h)
-
+    sort(cards,l,p-1)
+    sort(cards, p+1, h)
 
 
 class Calc:
   def __init__(self):
     self.__cards = []
+    self.__suits = []
+    self.__rank = 1
+    self.__ranks = {1:"HighCard", 2:"OnePair", 3:"TwoPair", 4:"ThreeOfKind", 5:"Straight", 6:"Flush", 7:"FullHouse", 8:"FourOfKind", 9:"StraightFlush", 10:"RoyalFlush"}
 
-  def add_hand(self,cards):
-    self.__cards = cards
+  def __str__(self):
+    return self.__ranks.get(self.__rank)
 
   def add_cards(self, cards):
     self.__cards = np.append(self.__cards, cards)
     sort(self.__cards, 0, self.__cards.size-1)
+    self.__cards = self.__cards.tolist()
+    self.calculate_rank()
 
-  def calculate(self):
-    self.__is_straight(self.__cards)
-    return 0
+  def calculate_rank(self):
+    if(self.__is_flush()):
+      filtered = list(filter(lambda c: c.get_suit() == self.__suits[-1], self.__cards))
+      if(self.__is_straight(filtered)):
+        self.__rank = 10 if (filtered[-1].is_a("A") and filtered[-5].is_a("10")) else 9
+      else:
+        self.__rank = 6
+        self.__is_other()
+    elif(self.__is_straight(self.__cards)):
+        self.__rank = 5
+    else:
+      self.__is_other()
 
   def __is_flush(self):
-    suits = [card.get_suit() for ard in cards]
-    suit = self.__max_suit(suits)
-    suit_count = np.size(suits == suit)
-    return True, suit if suit_count >= 5 else False, None
+    self.__suits = [card.get_suit() for card in self.__cards]
+    self.__mode_suit()
+    suit_count = self.__suits.count(self.__suits[-1])
+    return True if suit_count >= 5 else False
 
-  def __max_suit(self, suits):
-    return stats.mode(suit)
+  def __mode_suit(self):
+    self.__suits = sorted(self.__suits)
+    self.__suits = sorted(self.__suits, key=self.__suits.count)
 
   def __is_straight(self, cards):
     all_possible = np.flip(np.unique(cards))
     if(all_possible[0].is_a("A")):
       suit = all_possible[0].get_suit()
-      all_possible = np.append(all_possible, c.Card("A", suit, 1)).tolist()
+      all_possible = np.append(all_possible, crd.Card("A", suit, 1)).tolist()
     prev = all_possible[0]
     count = 1
     for card in all_possible[1:]:
+      count = self.__count(card, prev, count)
       if(count == 5):
         return True
-      count = self.__count(card, prev, count)
       prev = card
     return False
 
   def __count(self, card1, card2, count):
-    return count+1 if (card.get_value() == prev.get_value()-1) else 1
+    return count+1 if (card1.get_value() == card2.get_value()-1) else 1
 
-  def __get_flush(self, cards, suit):
-    return list(filter(lambda c: c.get_suit() == suit, cards)).reverse()
-
-  def __get_straight(self, cards):
-    straight = []
-    all_possible = np.flip(np.unique(cards))
-    if(all_possible[0].is_a("A")):
-      suit = all_possible[0].get_suit()
-      all_possible = np.append(all_possible, c.Card("A", suit, 1)).tolist()
-    for card in all_possible:
-      if(not straight):
-        straight.append(card)
-      elif(len(striaght) == 5):
-        break
+  def __is_other(self):
+    grouped = sorted(self.__cards, key=self.__cards.count)
+    new_rank = 1
+    if(grouped.count(grouped[-1]) == 4):
+      new_rank = 8
+    elif(grouped.count(grouped[-1]) == 3):
+      new_rank = 7 if (grouped.count(grouped[-4]) >= 2) else 4
+    elif(grouped.count(grouped[-1]) == 2):
+      if(len(grouped) == 2):
+        new_rank = 2
       else:
-        if(card == straight[-1].get_value()-1):
-          straight.append(card)
-        else:
-          straight = [card]
-    return straight
-
-  def __get_four_of_kind(self, cards):
-    groups = self.__group_sorted(cards)
-    fours = groups[0:4]
-    kicker = sorted(groups[4:]).reverse()[0]
-    fours.append(kicker)
-    return fours
-
-  def __get_full_house(self, cards):
-    groups = self.__group_sorted(cards)
-    threes = groups[0:3]
-    pairs = sorted([c for c in groups[3:] if groups.count(c) >= 2]).reverse()[0:2]
-    return threes + pairs
-
-  def __get_three_of_kind(self, cards)
-    groups = self.__group_sorted(cards)
-    threes = groups[0:3]
-    pairs = sorted(groups[3:]).reverse()[0:2]
-    return threes + pairs
-
-  def __get_two_pairs(self, cards):
-    groups = self.__group_sorted(cards)
-    pairs = group[0:4]
-    kicker = sorted(groups[4:]).reverse()[0]
-    return pairs + kicker
-
-  def __get_one_pair(self, cards):
-    groups = self.__group_sorted(cards)
-    pairs = group[0:4]
-    kicker = sorted(groups[4:]).reverse()[0]
-    return pairs + kicker
-
-  def __get_high_card(self, cards):
-    return sorted(cards).reverse()[0:5]
-
-  def __group_sorted(self, cards):
-    return sorted(new_cards, key=new_cards.count).reverse()
-
-
-
+        new_rank = 3 if (grouped.count(grouped[-3]) == 2) else 2
+    self.__rank = max(self.__rank, new_rank)
