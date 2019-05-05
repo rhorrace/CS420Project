@@ -36,6 +36,8 @@ class Calc:
     self.calculate_rank()
 
   def calculate_rank(self):
+    if(not self.__cards):
+      return
     if(self.__is_flush()):
       filtered = list(filter(lambda c: c.get_suit() == self.__suits[-1], self.__cards))
       if(self.__is_straight(filtered)):
