@@ -1,13 +1,13 @@
 import card as crd
-import numpy as np
 #from scipy import stats
 
 class Calc:
-  def __init__(self):
-    self.__cards = []
+  def __init__(self, cards=[]):
+    self.__cards = cards
     self.__suits = []
     self.__rank = 1
     self.__ranks = {1:"HighCard", 2:"OnePair", 3:"TwoPair", 4:"ThreeOfKind", 5:"Straight", 6:"Flush", 7:"FullHouse", 8:"FourOfKind", 9:"StraightFlush", 10:"RoyalFlush"}
+    self.__calculate_rank()
 
   def __str__(self):
     return self.__ranks.get(self.__rank)
@@ -111,3 +111,9 @@ class Calc:
       else:
         straight = [card]
     return []
+
+c3 = crd.Card("3", "H", 3)
+c4 = crd.Card("4", "D", 4)
+hand = [c3,c4]
+c = Calc(hand)
+print(c)
