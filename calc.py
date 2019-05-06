@@ -4,6 +4,7 @@ import card as crd
 class Calc:
   def __init__(self, cards=[]):
     self.__cards = cards
+    self.__cards = sorted(self.__cards, reverse=True)
     self.__suits = []
     self.__rank = 1
     self.__ranks = {1:"HighCard", 2:"OnePair", 3:"TwoPair", 4:"ThreeOfKind", 5:"Straight", 6:"Flush", 7:"FullHouse", 8:"FourOfKind", 9:"StraightFlush", 10:"RoyalFlush"}
@@ -26,7 +27,7 @@ class Calc:
   def best_hand(self):
     if not self.__cards:
       return []
-    hand, kick = [], []
+    hand, kicker = [], []
     if self.__rank == 10 or self.__rank == 9:
       filtered = list(filter(lambda c: c.get_suit() == self.__suits[0], self.__cards))
       hand = self.__get_straight(filtered)
@@ -116,4 +117,4 @@ c3 = crd.Card("3", "H", 3)
 c4 = crd.Card("4", "D", 4)
 hand = [c3,c4]
 c = Calc(hand)
-print(c)
+print(c, "\t", c.best_hand())
