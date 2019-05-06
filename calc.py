@@ -1,23 +1,6 @@
 import card as crd
 import numpy as np
-from scipy import stats
-
-def partition(cards, l, h):
-  i = l - 1
-  pivot = cards[h]
-  for j in range(l, h):
-    if(cards[j] <= pivot):
-      i += 1
-      cards[i], cards[j] = cards[j], cards[i]
-  cards[i+1], cards[h] = cards[h], cards[i+1]
-  return i + 1
-
-def sort(cards, l, h):
-  if(l < h):
-    p = partition(cards, l ,h)
-    sort(cards,l,p-1)
-    sort(cards, p+1, h)
-
+#from scipy import stats
 
 class Calc:
   def __init__(self):
@@ -29,22 +12,47 @@ class Calc:
   def __str__(self):
     return self.__ranks.get(self.__rank)
 
-  def add_cards(self, cards):
-    self.__cards = np.append(self.__cards, cards)
-    sort(self.__cards, 0, self.__cards.size-1)
-    self.__cards = self.__cards.tolist()
-    self.calculate_rank()
+  def get_rank(self):
+    return self.__rank
 
-  def calculate_rank(self):
+  def add_cards(self, cards):
+    if not self.__cards:
+      self.__cards = cards
+    else:
+      self.__cards.extend(cards)
+    self.__cards = sorted(self.__cards, reverse=True)
+    self.__calculate_rank()
+
+  def best_hand(self):
+    if not self.__cards:
+      return []
+    hand, kick = [], []
+    if self.__rank == 10 or self.__rank == 9:
+      filtered = list(filter(lambda c: c.get_suit() == self.__suits[0], self.__cards))
+      hand = self.__get_straight(filtered)
+    elif self.__rank == 8 or self.__rank == 3:
+      hand, kicker = self.__cards[:4], sorted(self.__cards[4:], reverse=True)[:1]
+    elif self.__rank == 7:
+      hand, kicker = self.__cards[:3], sorted(list(filter(lambda c: self.__cards[3:].count(c) >= 2, self.__cards[3:])), reverse=True)[:2]
+    elif self.__rank == 6:
+      hand = list(filter(lambda c: c.get_suit() == self.__suits[0], self.__cards))[:5]
+    elif self.__rank == 5:
+      hand = self.__get_straight(self.__cards)
+    elif self.__rank == 4:
+      hand, kicker = self.__cards[:3], sorted(self.__cards[3:],reverse=True)[:2]
+    else:
+      hand = self.__cards[:min(len(self.__cards), 5)]
+    return hand + kicker
+
+  def __calculate_rank(self):
     if(not self.__cards):
       return
     if(self.__is_flush()):
-      filtered = list(filter(lambda c: c.get_suit() == self.__suits[-1], self.__cards))
+      filtered = list(filter(lambda c: c.get_suit() == self.__suits[0], self.__cards))
       if(self.__is_straight(filtered)):
-        self.__rank = 10 if (filtered[-1].is_a("A") and filtered[-5].is_a("10")) else 9
+        self.__rank = 10 if (filtered[0].is_a("A") and filtered[4].is_a("10")) else 9
       else:
         self.__rank = 6
-        self.__is_other()
     elif(self.__is_straight(self.__cards)):
         self.__rank = 5
     else:
@@ -53,18 +61,18 @@ class Calc:
   def __is_flush(self):
     self.__suits = [card.get_suit() for card in self.__cards]
     self.__mode_suit()
-    suit_count = self.__suits.count(self.__suits[-1])
+    suit_count = self.__suits.count(self.__suits[0])
     return True if suit_count >= 5 else False
 
   def __mode_suit(self):
     self.__suits = sorted(self.__suits)
-    self.__suits = sorted(self.__suits, key=self.__suits.count)
+    self.__suits = sorted(self.__suits, key=self.__suits.count, reverse=True)
 
   def __is_straight(self, cards):
-    all_possible = np.flip(np.unique(cards))
+    all_possible = list(dict.fromkeys(cards))
     if(all_possible[0].is_a("A")):
       suit = all_possible[0].get_suit()
-      all_possible = np.append(all_possible, crd.Card("A", suit, 1)).tolist()
+      all_possible.append(crd.Card("A", suit, 1))
     prev = all_possible[0]
     count = 1
     for card in all_possible[1:]:
@@ -78,15 +86,28 @@ class Calc:
     return count+1 if (card1.get_value() == card2.get_value()-1) else 1
 
   def __is_other(self):
-    grouped = sorted(self.__cards, key=self.__cards.count)
+    self.__cards = sorted(self.__cards, key=self.__cards.count, reverse=True)
     new_rank = 1
-    if(grouped.count(grouped[-1]) == 4):
+    if(self.__cards.count(self.__cards[0]) == 4):
       new_rank = 8
-    elif(grouped.count(grouped[-1]) == 3):
-      new_rank = 7 if (grouped.count(grouped[-4]) >= 2) else 4
-    elif(grouped.count(grouped[-1]) == 2):
-      if(len(grouped) == 2):
+    elif(self.__cards.count(self.__cards[0]) == 3):
+      new_rank = 7 if (self.__cards.count(self.__cards[3]) >= 2) else 4
+    elif(self.__cards.count(self.__cards[0]) == 2):
+      if(len(self.__cards) <= 3):
         new_rank = 2
       else:
-        new_rank = 3 if (grouped.count(grouped[-3]) == 2) else 2
+        new_rank = 3 if (self.__cards.count(self.__cards[2]) == 2) else 2
     self.__rank = max(self.__rank, new_rank)
+
+  def __get_straight(self, cards):
+    straight = []
+    filtered = list(dict.fromkeys(cards))
+    straight.append(filtered[0])
+    for card in filtered[1:]:
+      if card.get_value() == straight[-1].get_value()-1:
+        straight.append(card)
+        if len(straight) == 5:
+          return straight
+      else:
+        straight = [card]
+    return []
