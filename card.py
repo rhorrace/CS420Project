@@ -33,29 +33,38 @@ class Card:
   def get_suit_val(self):
     return self.__suit_val
 
+  # Card as string, for print statements
   def __str__(self):
     return self.__name + ":" + self.__suit
 
+  # Card as string, but works for lists too, for print statements
   def __repr__(self):
     return str(self)
 
+  # Card hash for dictionaries
   def __hash__(self):
     return hash(self.__value)
 
+  # == operator
   def __eq__(self, other):
     return True if self.__value == other.__value else False
 
+  # != operator
   def __ne__(self, other):
     return True if self.__value != other.__value else False
 
+  # < operator
   def __lt__(self, other):
     return True if self.__value < other.__value else False
 
+  # <= operator
   def __le__(self, other):
     return True if self.__value <= other.__value else False
 
+  # > operator
   def __gt__(self, other):
     return True if self.__value > other.__value else False
 
+  # >= operator
   def __ge__(self, other):
     return True if self.__value >= other.__value else False
