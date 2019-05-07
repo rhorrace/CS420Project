@@ -6,7 +6,7 @@ class Card:
     self.__suit = suit
     self.__value = value
 
-  def is_a(name):
+  def is_a(self, name):
     return self.__name == name
 
   # Displays card
@@ -59,14 +59,3 @@ class Card:
 
   def __ge__(self, other):
     return True if self.__value >= other.__value else False
-
-c1 = Card("2", "H", 2)
-c2 = Card("2", "D", 2)
-print(c1)
-print(c2)
-print(c1 == c2)
-print(c1 < c2)
-print(c1 <= c2)
-print(c1 > c2)
-print(c1 >= c2)
-print(c1 != c2)
