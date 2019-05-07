@@ -113,8 +113,10 @@ class Calc:
         straight = [card]
     return []
 
+'''
 c3 = crd.Card("3", "H", 3)
 c4 = crd.Card("4", "D", 4)
 hand = [c3,c4]
 c = Calc(hand)
 print(c, "\t", c.best_hand())
+'''
