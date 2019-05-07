@@ -23,7 +23,7 @@ class Deck:
   def deal_card(self):
     a_card = self.__cards.pop(0)
     #for testing purposes:
-    print ("Popped: ")
+    print ("Dealt card: ")
     a_card.display()
     return a_card
 
@@ -36,9 +36,3 @@ class Deck:
   def add_cards(cards):
     self.__cards.append(cards)
     np.random.shuffle(self.__cards)
-
-d = Deck()
-d.display()
-
-d.shuffle()
-d.deal_card()

@@ -6,7 +6,6 @@ class Card:
     self.__suit = suit
     self.__value = value
 
-  # Card is a specific name
   def is_a(self, name):
     return self.__name == name
 
@@ -69,5 +68,3 @@ class Card:
   # >= operator
   def __ge__(self, other):
     return True if self.__value >= other.__value else False
-
-
