@@ -13,6 +13,9 @@ class Calc:
   def __str__(self):
     return self.__ranks.get(self.__rank)
 
+  def as_string(self):
+    return self.__ranks.get(self.__rank)
+
   def get_rank(self):
     return self.__rank
 
@@ -46,15 +49,15 @@ class Calc:
     return hand + kicker
 
   def __calculate_rank(self):
-    if(not self.__cards):
+    if not self.__cards:
       return
-    if(self.__is_flush()):
+    if self.__is_flush():
       filtered = list(filter(lambda c: c.get_suit() == self.__suits[0], self.__cards))
-      if(self.__is_straight(filtered)):
+      if self.__is_straight(filtered):
         self.__rank = 10 if (filtered[0].is_a("A") and filtered[4].is_a("10")) else 9
       else:
         self.__rank = 6
-    elif(self.__is_straight(self.__cards)):
+    elif self.__is_straight(self.__cards):
         self.__rank = 5
     else:
       self.__is_other()
@@ -71,14 +74,14 @@ class Calc:
 
   def __is_straight(self, cards):
     all_possible = list(dict.fromkeys(cards))
-    if(all_possible[0].is_a("A")):
+    if all_possible[0].is_a("A"):
       suit = all_possible[0].get_suit()
       all_possible.append(crd.Card("A", suit, 1))
     prev = all_possible[0]
     count = 1
     for card in all_possible[1:]:
       count = self.__count(card, prev, count)
-      if(count == 5):
+      if count == 5:
         return True
       prev = card
     return False
@@ -89,12 +92,12 @@ class Calc:
   def __is_other(self):
     self.__cards = sorted(self.__cards, key=self.__cards.count, reverse=True)
     new_rank = 1
-    if(self.__cards.count(self.__cards[0]) == 4):
+    if self.__cards.count(self.__cards[0]) == 4:
       new_rank = 8
-    elif(self.__cards.count(self.__cards[0]) == 3):
+    elif self.__cards.count(self.__cards[0]) == 3:
       new_rank = 7 if (self.__cards.count(self.__cards[3]) >= 2) else 4
-    elif(self.__cards.count(self.__cards[0]) == 2):
-      if(len(self.__cards) <= 3):
+    elif self.__cards.count(self.__cards[0]) == 2:
+      if len(self.__cards) <= 3:
         new_rank = 2
       else:
         new_rank = 3 if (self.__cards.count(self.__cards[2]) == 2) else 2
@@ -112,9 +115,3 @@ class Calc:
       else:
         straight = [card]
     return []
-
-c3 = crd.Card("3", "H", 3)
-c4 = crd.Card("4", "D", 4)
-hand = [c3,c4]
-c = Calc(hand)
-print(c, "\t", c.best_hand())

@@ -28,4 +28,6 @@ class Deck:
     np.random.shuffle(self.__cards)
 
   def remove(self, n):
-    return self.__cards.pop(n)
+    cards = self.__cards[:n]
+    self.__cards = self.__cards[n:]
+    return cards
