@@ -23,12 +23,9 @@ class Deck:
     for c in self.__cards:
       c.display()
 
-  def add(card):
-    self.__cards.append(card)
-
-  def add_cards(cards):
-    self.__cards.append(cards)
+  def add(self, cards):
+    self.__cards.extend(card)
     np.random.shuffle(self.__cards)
 
-  def remove():
-    return self.__cards.pop(0)
+  def remove(self, n):
+    return self.__cards.pop(n)
