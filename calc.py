@@ -13,6 +13,11 @@ class Calc:
   def __str__(self):
     return self.__ranks.get(self.__rank)
 
+  def clear(self):
+    self.__cards.clear()
+    self.__suits.clear()
+    self.__rank = 1
+
   def as_string(self):
     return self.__ranks.get(self.__rank)
 
