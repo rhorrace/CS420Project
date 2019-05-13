@@ -11,9 +11,9 @@ class Player:
     self._brain.add_cards(card)
 
   def put_back_hand(self):
-    cards = self.__hand[:2]
+    putback = self.__hand[:2]
     self.__hand = []
-    return cards
+    return putback
 
   def look_at_table(self, cards):
     self._brain.add_cards(cards)
