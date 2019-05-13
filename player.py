@@ -10,11 +10,13 @@ class Player:
     self.__hand.append(card)
     self._brain.add_cards(card)
 
-  def putback_hand(self):
-    return self.__hand.pop(2)
+  def put_back_hand(self):
+    cards = self.__hand[:2]
+    self.__hand = []
+    return cards
 
   def look_at_table(self, cards):
-    self._brain.add_cards(card)
+    self._brain.add_cards(cards)
 
   def get_rank(self):
     return self._brain.get_rank()
