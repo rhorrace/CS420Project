@@ -3,16 +3,19 @@ import deck as dk
 
 class Player:
   def __init__(self):
-    self.__hand = []          # list of cards
+    self._hand = []          # list of cards
     self._brain = clc.Calc()  # used to eval hand value
 
   def receive(self, card):
-    self.__hand.extend(card)
+    self._hand.extend(card)
     self._brain.add_cards(card)
 
+  def get_hand(self):
+    return self._hand
+
   def put_back_hand(self):
-    putback = self.__hand[:2]
-    self.__hand = []
+    putback = self._hand[:2]
+    self._hand = []
     self._brain.clear()
     return putback
 
