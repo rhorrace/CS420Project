@@ -6,17 +6,21 @@ class Player:
     self.__hand = []          # list of cards
     self._brain = clc.Calc()  # used to eval hand value
 
-  def receive_card(self, card):
-    self.__hand.append(card)
+  def receive(self, card):
+    self.__hand.extend(card)
     self._brain.add_cards(card)
 
   def put_back_hand(self):
     putback = self.__hand[:2]
     self.__hand = []
+    self._brain.clear()
     return putback
 
   def look_at_table(self, cards):
     self._brain.add_cards(cards)
+
+  def best_hand(self):
+    return self._brain.best_hand()
 
   def get_rank(self):
     return self._brain.get_rank()
