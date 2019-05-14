@@ -31,6 +31,8 @@ class Calc:
       self.__cards.extend(cards)
     self.__cards = sorted(self.__cards, reverse=True)
     self.__calculate_rank()
+    if not self.__rank in [5,9,10]:
+      self.__cards = sorted(self.__cards, key=self.__cards.count, reverse=True)
 
   def best_hand(self):
     if not self.__cards:
@@ -54,6 +56,7 @@ class Calc:
     return hand + kicker
 
   def __calculate_rank(self):
+    num_cards = len(self.__cards)
     if not self.__cards:
       return
     if self.__is_flush():
@@ -62,10 +65,14 @@ class Calc:
         self.__rank = 10 if (filtered[0].is_a("A") and filtered[4].is_a("10")) else 9
       else:
         self.__rank = 6
+        if num_cards > 7:
+          self.__is_other(num_cards)
     elif self.__is_straight(self.__cards):
         self.__rank = 5
+        if num_cards > 7:
+          self.__is_other(num_cards)
     else:
-      self.__is_other()
+      self.__is_other(num_cards)
 
   def __is_flush(self):
     self.__suits = [card.get_suit() for card in self.__cards]
@@ -94,23 +101,28 @@ class Calc:
   def __count(self, card1, card2, count):
     return count+1 if (card1.get_value() == card2.get_value()-1) else 1
 
-  def __is_other(self):
-    self.__cards = sorted(self.__cards, key=self.__cards.count, reverse=True)
+  def __is_other(self, num_cards):
+    cards = sorted(self.__cards, key=self.__cards.count, reverse=True)
     new_rank = 1
-    if self.__cards.count(self.__cards[0]) == 4:
+    if cards.count(cards[0]) == 4:
       new_rank = 8
-    elif self.__cards.count(self.__cards[0]) == 3:
-      new_rank = 7 if (self.__cards.count(self.__cards[3]) >= 2) else 4
-    elif self.__cards.count(self.__cards[0]) == 2:
-      if len(self.__cards) <= 3:
+    elif cards.count(cards[0]) == 3:
+      if num_cards > 3:
+        new_rank = 7 if (cards.count(cards[3]) >= 2) else 4
+      else:
+        new_rank = 4
+    elif self.__cards.count(cards[0]) == 2:
+      if num_cards <= 3:
         new_rank = 2
       else:
-        new_rank = 3 if (self.__cards.count(self.__cards[2]) == 2) else 2
+        new_rank = 3 if (cards.count(cards[2]) == 2) else 2
     self.__rank = max(self.__rank, new_rank)
 
   def __get_straight(self, cards):
     straight = []
     filtered = list(dict.fromkeys(cards))
+    if filtered[0].is_a("A"):
+      filtered.append(crd.Card(filtered[0].get_name(), filtered[0].get_suit(), 1))
     straight.append(filtered[0])
     for card in filtered[1:]:
       if card.get_value() == straight[-1].get_value()-1:
