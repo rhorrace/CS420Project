@@ -14,7 +14,7 @@ class Player:
     return self._hand
 
   def put_back_hand(self):
-    putback = self._hand[:2]
+    putback = self._hand.copy()
     self._hand = []
     self._brain.clear()
     return putback

@@ -3,26 +3,34 @@ import player as p
 
 class Table:
   # initialize
-  def __init__(self):
+  def __init__(self, max_hand=5):
+    self._max_hand = max_hand
     self._player = p.Player()
     self._dealer = p.Dealer()
 
   # Deal calds to each player
-  def deal_players(self, n):
-    for _ in range(n):
+  def deal_players(self):
+    for _ in range(self._max_hand):
        self._player.receive(self._dealer.deal(1))
        self._dealer.receive(self._dealer.deal(1))
 
+  def reset(self):
+    self._dealer.retrieve_cards(self._player.put_back_hand())
+    self._dealer.retrieve_cards(self._dealer.put_back_hand())
 
-  # Displays players and dealer
-  def display_players(self):
+
+  # Displays player
+  def display_player(self):
     print("Player:\t", self._player.get_hand())
     print("\t", self._player.get_rank_as_string(), ":\t", self._player.best_hand())
+
+  # Displays dealer
+  def display_dealer(self):
     print("Dealer:\t", self._dealer.get_hand())
     print("\t", self._dealer.get_rank_as_string(), ":\t", self._dealer.best_hand())
 
 
-  # Detemrines who has the winning hand
+  # Determines who has the winning hand
   def winner(self):
     player_rank = self._player.get_rank()
     dealer_rank = self._dealer.get_rank()
@@ -49,18 +57,24 @@ class Table:
     print("It's a Tie")
 
 class Holdem(Table):
-  def __init__(self):
-    super().__init__()
+  def __init__(self, max_hand=2):
+    super().__init__(max_hand)
     self.__community = []
 
-  # Flop function
+  # Reset function
+  def reset(self):
+    super().reset()
+    self._dealer.retrieve_cards(self.__community)
+    self.__community = []
+
+  # Update community function
   def update_community(self,n):
     self.__community.extend(self._dealer.deal(n))
     self._player.look_at_table(self.__community[-n:])
     self._dealer.look_at_table(self.__community[-n:])
 
   # Displays the table (flop, turn, river)
-  def display_table(self):
+  def display_table(self, show_dealer=False):
     num_cards = len(self.__community)
     if num_cards >= 3:
       print("Flop:\t", self.__community[:3])
@@ -68,28 +82,19 @@ class Holdem(Table):
         print("Turn:\t", self.__community[3:4])
         if num_cards == 5:
           print("River:\t", self.__community[-1:])
+    self.display_player()
+    if show_dealer:
+      self.display_dealer()
 
-  #Runs through a complete game
-  def play_game(self, n):
-    t.deal_players(n)
-    t.display_players()
-    t.display_table()
-    print("---------------------")
-    t.update_community(3)
-    t.display_table()
-    t.display_players()
-    print("---------------------")
-    t.update_community(1)
-    t.display_table()
-    t.display_players()
-    print("---------------------")
-    t.update_community(1)
-    t.display_table()
-    t.display_players()
-    print("---------------------")
-    t.winner()
+  def deal_phase(self):
+    self.deal_players()
+    self.display_player()
 
+  def community_phase(self, n):
+    self.update_community(n)
+    self.display_table()
 
-t = Holdem()
-max_hand = 2
-t.play_game(2)
+  def winner_phase(self):
+    self.display_table(show_dealer=True)
+    self.winner()
+

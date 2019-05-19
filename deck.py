@@ -24,7 +24,7 @@ class Deck:
       c.display()
 
   def add(self, cards):
-    self.__cards.extend(card)
+    self.__cards.extend(cards)
     np.random.shuffle(self.__cards)
 
   def remove(self, n):
