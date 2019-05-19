@@ -5,8 +5,26 @@ class Table:
   # initialize
   def __init__(self, max_hand=5):
     self._max_hand = max_hand
+    self._phase = 0
+    self._phases = 2
     self._player = p.Player()
     self._dealer = p.Dealer()
+
+  def play(self):
+    if self._phase == 0: self.deal_phase()
+    else:
+      self.winner_phase()
+      self.reset()
+    self._phase = (self._phase + 1) % self._phases
+
+  def deal_phase(self):
+    self.deal_players()
+    self.display_player()
+
+  def winner_phase(self):
+    self.display_player()
+    self.display_dealer()
+    self.winner()
 
   # Deal calds to each player
   def deal_players(self):
@@ -18,7 +36,6 @@ class Table:
     self._dealer.retrieve_cards(self._player.put_back_hand())
     self._dealer.retrieve_cards(self._dealer.put_back_hand())
 
-
   # Displays player
   def display_player(self):
     print("Player:\t", self._player.get_hand())
@@ -28,7 +45,6 @@ class Table:
   def display_dealer(self):
     print("Dealer:\t", self._dealer.get_hand())
     print("\t", self._dealer.get_rank_as_string(), ":\t", self._dealer.best_hand())
-
 
   # Determines who has the winning hand
   def winner(self):
@@ -59,6 +75,8 @@ class Table:
 class Holdem(Table):
   def __init__(self, max_hand=2):
     super().__init__(max_hand)
+    self._phase = 0
+    self._phases = 5
     self.__community = []
 
   # Reset function
@@ -66,6 +84,23 @@ class Holdem(Table):
     super().reset()
     self._dealer.retrieve_cards(self.__community)
     self.__community = []
+
+  def play(self):
+    if self._phase == 0: self.deal_phase()
+    elif self._phase == 1: self.community_phase(3)
+    elif self._phase == 2 or self._phase == 3: self.community_phase(1)
+    else:
+      self.winner_phase()
+      self.reset()
+    self._phase = (self._phase + 1) % self._phases
+
+  def community_phase(self, n):
+    self.update_community(n)
+    self.display_table()
+
+  def winner_phase(self):
+    self.display_table(show_dealer=True)
+    self.winner()
 
   # Update community function
   def update_community(self,n):
@@ -86,15 +121,5 @@ class Holdem(Table):
     if show_dealer:
       self.display_dealer()
 
-  def deal_phase(self):
-    self.deal_players()
-    self.display_player()
 
-  def community_phase(self, n):
-    self.update_community(n)
-    self.display_table()
-
-  def winner_phase(self):
-    self.display_table(show_dealer=True)
-    self.winner()
 
