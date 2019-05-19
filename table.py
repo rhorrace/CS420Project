@@ -72,6 +72,7 @@ class Table:
         return
     print("It's a Tie")
 
+# Holdem class, is a Table
 class Holdem(Table):
   def __init__(self, max_hand=2):
     super().__init__(max_hand)
@@ -110,6 +111,12 @@ class Holdem(Table):
 
   # Displays the table (flop, turn, river)
   def display_table(self, show_dealer=False):
+    self.display_community()
+    self.display_player()
+    if show_dealer:
+      self.display_dealer()
+
+  def display_community(self):
     num_cards = len(self.__community)
     if num_cards >= 3:
       print("Flop:\t", self.__community[:3])
@@ -117,9 +124,4 @@ class Holdem(Table):
         print("Turn:\t", self.__community[3:4])
         if num_cards == 5:
           print("River:\t", self.__community[-1:])
-    self.display_player()
-    if show_dealer:
-      self.display_dealer()
-
-
 
