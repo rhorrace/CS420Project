@@ -38,13 +38,13 @@ class Table:
 
   # Displays player
   def display_player(self):
-    print("Player:\t", self._player.get_hand())
-    print("\t", self._player.get_rank_as_string(), ":\t", self._player.best_hand())
+    print("Player:\t", *self._player.get_hand(), sep=" ")
+    print("\t", self._player.get_rank_as_string(), ":\t", *self._player.best_hand(), sep=" ")
 
   # Displays dealer
   def display_dealer(self):
-    print("Dealer:\t", self._dealer.get_hand())
-    print("\t", self._dealer.get_rank_as_string(), ":\t", self._dealer.best_hand())
+    print("Dealer:\t", *self._dealer.get_hand(), sep=" ")
+    print("\t", self._dealer.get_rank_as_string(), ":\t", *self._dealer.best_hand(), sep=" ")
 
   # Determines who has the winning hand
   def winner(self):
@@ -63,7 +63,7 @@ class Table:
     dealer_hand = self._dealer.best_hand()
     player_hand = list(dict.fromkeys(player_hand))
     dealer_hand = list(dict.fromkeys(dealer_hand))
-    for p,d in zip(player_hand,dealer_hand):
+    for p,d in zip(player_hand, dealer_hand):
       if p > d:
         print("Player wins")
         return
@@ -96,6 +96,7 @@ class Holdem(Table):
     self._phase = (self._phase + 1) % self._phases
 
   def community_phase(self, n):
+    self._dealer.burn()
     self.update_community(n)
     self.display_table()
 
@@ -119,9 +120,10 @@ class Holdem(Table):
   def display_community(self):
     num_cards = len(self.__community)
     if num_cards >= 3:
-      print("Flop:\t", self.__community[:3])
+      print("Flop:\t", *self.__community[:3], sep=" ")
       if num_cards >= 4:
-        print("Turn:\t", self.__community[3:4])
+        print("Turn:\t", self.__community[3])
         if num_cards == 5:
-          print("River:\t", self.__community[-1:])
+          print("River:\t", self.__community[-1])
+
 

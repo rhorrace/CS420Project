@@ -29,7 +29,7 @@ class Player:
     return self._brain.get_rank()
 
   def get_rank_as_string(self):
-    return self._brain.as_string()
+    return str(self._brain)
 
 # Dealer class, is also a player
 class Dealer(Player):
@@ -37,10 +37,16 @@ class Dealer(Player):
   def __init__(self):
     super().__init__()
     self.__deck = dk.Deck()
+    self.__burned = []
 
   def deal(self, n):
     return self.__deck.remove(n)
 
+  def burn(self):
+    self.__burned.extend(self.__deck.remove(1))
+
   def retrieve_cards(self, cards):
+    self.__deck.add(self.__burned)
+    self.__burned = []
     self.__deck.add(cards)
 

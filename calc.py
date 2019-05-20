@@ -1,25 +1,20 @@
 import card as crd
-#from scipy import stats
 
 class Calc:
   def __init__(self, cards=[]):
-    self.__cards = cards
-    self.__cards = sorted(self.__cards, reverse=True)
+    self.__cards = []
     self.__suits = []
     self.__rank = 1
     self.__ranks = {1:"HighCard", 2:"OnePair", 3:"TwoPair", 4:"ThreeOfKind", 5:"Straight", 6:"Flush", 7:"FullHouse", 8:"FourOfKind", 9:"StraightFlush", 10:"RoyalFlush"}
-    self.__calculate_rank()
+    self.add_cards(cards)
 
   def __str__(self):
-    return self.__ranks.get(self.__rank)
+    return self.__ranks[self.__rank]
 
   def clear(self):
     self.__cards.clear()
     self.__suits.clear()
     self.__rank = 1
-
-  def as_string(self):
-    return self.__ranks.get(self.__rank)
 
   def get_rank(self):
     return self.__rank
