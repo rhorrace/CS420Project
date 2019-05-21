@@ -1,4 +1,4 @@
-import table as T
+from table import Holdem
 import os
 
 def play(game):
@@ -12,6 +12,6 @@ def play(game):
     if choice == "q" or choice == "Q":
       return
 
-game = T.Holdem()
-play(game)
-print("Goodbye!")
+if __name__ == "__main__":
+  play(Holdem())
+  print("Goodbye!")

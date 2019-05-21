@@ -1,4 +1,4 @@
-import card as crd
+from card import Card
 
 class Calc:
   def __init__(self, cards=[]):
@@ -6,7 +6,7 @@ class Calc:
     self.__suits = []
     self.__rank = 1
     self.__ranks = {1:"HighCard", 2:"OnePair", 3:"TwoPair", 4:"ThreeOfKind", 5:"Straight", 6:"Flush", 7:"FullHouse", 8:"FourOfKind", 9:"StraightFlush", 10:"RoyalFlush"}
-    self.add_cards(cards)
+    if cards: self.add_cards(cards)
 
   def __str__(self):
     return self.__ranks[self.__rank]
@@ -41,7 +41,7 @@ class Calc:
     elif self.__rank == 7:
       hand, kicker = self.__cards[:3], sorted(list(filter(lambda c: self.__cards[3:].count(c) >= 2, self.__cards[3:])), reverse=True)[:2]
     elif self.__rank == 6:
-      hand = list(filter(lambda c: c.get_suit() == self.__suits[0], self.__cards))[:5]
+      hand = sorted([c for c in self.__cards if c.get_suit() == self.__suits[0]], reverse=True)[:5]
     elif self.__rank == 5:
       hand = self.__get_straight(self.__cards)
     elif self.__rank == 4:
@@ -83,7 +83,7 @@ class Calc:
     all_possible = list(dict.fromkeys(cards))
     if all_possible[0].is_a("A"):
       suit = all_possible[0].get_suit()
-      all_possible.append(crd.Card("A", suit, 1))
+      all_possible.append(Card("A", suit, 1))
     prev = all_possible[0]
     count = 1
     for card in all_possible[1:]:
@@ -117,7 +117,7 @@ class Calc:
     straight = []
     filtered = list(dict.fromkeys(cards))
     if filtered[0].is_a("A"):
-      filtered.append(crd.Card(filtered[0].get_name(), filtered[0].get_suit(), 1))
+      filtered.append(Card(filtered[0].get_name(), filtered[0].get_suit(), 1))
     straight.append(filtered[0])
     for card in filtered[1:]:
       if card.get_value() == straight[-1].get_value()-1:

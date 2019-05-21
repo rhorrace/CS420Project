@@ -1,4 +1,4 @@
-import card as crd
+from card import Card
 import numpy as np
 
 class Deck:
@@ -12,7 +12,7 @@ class Deck:
     suits = ["H","D","S","C"]
     for i in range(4):
       for j in range(13):
-        card = crd.Card(names[j],suits[i],values[j])
+        card = Card(names[j],suits[i],values[j])
         self.__cards.append(card)
     np.random.shuffle(self.__cards)
 

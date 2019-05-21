@@ -1,10 +1,10 @@
-import calc as clc
-import deck as dk
+from calc import Calc
+from deck import Deck
 
 class Player:
   def __init__(self):
     self._hand = []          # list of cards
-    self._brain = clc.Calc()  # used to eval hand value
+    self._brain = Calc()  # used to eval hand value
 
   def receive(self, card):
     self._hand.extend(card)
@@ -36,7 +36,7 @@ class Dealer(Player):
   # Initialize
   def __init__(self):
     super().__init__()
-    self.__deck = dk.Deck()
+    self.__deck = Deck()
     self.__burned = []
 
   def deal(self, n):

@@ -1,5 +1,5 @@
-import card as crd
-import player as p
+from card import Card
+from player import Player, Dealer
 
 class Table:
   # initialize
@@ -7,8 +7,8 @@ class Table:
     self._max_hand = max_hand
     self._phase = 0
     self._phases = 2
-    self._player = p.Player()
-    self._dealer = p.Dealer()
+    self._player = Player()
+    self._dealer = Dealer()
 
   def play(self):
     if self._phase == 0: self.deal_phase()
