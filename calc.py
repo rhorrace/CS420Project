@@ -9,11 +9,13 @@ class Calc:
     if cards: self.add_cards(cards)
 
   def __str__(self):
-    return self.__ranks[self.__rank]
+    best = self.best_hand()
+    hand_string = " ".join(str(c) for c in best)
+    return self.__ranks[self.__rank] + ":\t" + hand_string
 
   def clear(self):
-    self.__cards.clear()
-    self.__suits.clear()
+    self.__cards = []
+    self.__suits = []
     self.__rank = 1
 
   def get_rank(self):
@@ -30,24 +32,41 @@ class Calc:
       self.__cards = sorted(self.__cards, key=self.__cards.count, reverse=True)
 
   def best_hand(self):
-    if not self.__cards:
-      return []
-    hand, kicker = [], []
-    if self.__rank == 10 or self.__rank == 9:
+    if not self.__cards: return []
+    hand = []
+    if self.__rank == 10 or self.__rank == 9 or self.__rank == 6:
       filtered = list(filter(lambda c: c.get_suit() == self.__suits[0], self.__cards))
-      hand = self.__get_straight(filtered)
-    elif self.__rank == 8 or self.__rank == 3:
+      hand = self.__get_straight(filtered) if self.__rank != 6 else filtered[:5]
+    elif self.__rank == 5:
+      hand = self.__get_straight(self.__cards)
+    else: hand = self.get_other()
+    return hand
+
+  def __get_straight(self, cards):
+    straight = []
+    filtered = list(dict.fromkeys(cards))
+    if filtered[0].is_a("A"):
+      filtered.append(Card(filtered[0].get_name(), filtered[0].get_suit(), 1))
+    straight.append(filtered[0])
+    for card in filtered[1:]:
+      if card.get_value() == straight[-1].get_value()-1:
+        straight.append(card)
+        if len(straight) == 5:
+          return straight
+      else:
+        straight = [card]
+    return []
+
+  def get_other(self):
+    hand, kicker = [], []
+    if self.__rank == 8 or self.__rank == 3:
       hand, kicker = self.__cards[:4], sorted(self.__cards[4:], reverse=True)[:1]
     elif self.__rank == 7:
       hand, kicker = self.__cards[:3], sorted(list(filter(lambda c: self.__cards[3:].count(c) >= 2, self.__cards[3:])), reverse=True)[:2]
-    elif self.__rank == 6:
-      hand = sorted([c for c in self.__cards if c.get_suit() == self.__suits[0]], reverse=True)[:5]
-    elif self.__rank == 5:
-      hand = self.__get_straight(self.__cards)
     elif self.__rank == 4:
       hand, kicker = self.__cards[:3], sorted(self.__cards[3:],reverse=True)[:2]
     else:
-      hand = self.__cards[:min(len(self.__cards), 5)]
+      hand = self.__cards[:5]
     return hand + kicker
 
   def __calculate_rank(self):
@@ -113,17 +132,3 @@ class Calc:
         new_rank = 3 if (cards.count(cards[2]) == 2) else 2
     self.__rank = max(self.__rank, new_rank)
 
-  def __get_straight(self, cards):
-    straight = []
-    filtered = list(dict.fromkeys(cards))
-    if filtered[0].is_a("A"):
-      filtered.append(Card(filtered[0].get_name(), filtered[0].get_suit(), 1))
-    straight.append(filtered[0])
-    for card in filtered[1:]:
-      if card.get_value() == straight[-1].get_value()-1:
-        straight.append(card)
-        if len(straight) == 5:
-          return straight
-      else:
-        straight = [card]
-    return []

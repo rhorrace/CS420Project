@@ -38,13 +38,15 @@ class Table:
 
   # Displays player
   def display_player(self):
-    print("Player:\t", *self._player.get_hand(), sep=" ")
-    print("\t", self._player.get_rank_as_string(), ":\t", *self._player.best_hand(), sep=" ")
+    print(self._player)
+#    print("Player:\t", *self._player.get_hand(), sep=" ")
+#    print("\t", self._player.get_rank_as_string(), ":\t", *self._player.best_hand(), sep=" ")
 
   # Displays dealer
   def display_dealer(self):
-    print("Dealer:\t", *self._dealer.get_hand(), sep=" ")
-    print("\t", self._dealer.get_rank_as_string(), ":\t", *self._dealer.best_hand(), sep=" ")
+    print(self._dealer)
+#    print("Dealer:\t", *self._dealer.get_hand(), sep=" ")
+#    print("\t", self._dealer.get_rank_as_string(), ":\t", *self._dealer.best_hand(), sep=" ")
 
   # Determines who has the winning hand
   def winner(self):
@@ -125,5 +127,4 @@ class Holdem(Table):
         print("Turn:\t", self.__community[3])
         if num_cards == 5:
           print("River:\t", self.__community[-1])
-
 
