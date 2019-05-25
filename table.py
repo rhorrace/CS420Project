@@ -7,6 +7,7 @@ class Table:
     self._max_hand = max_hand
     self._phase = 0
     self._phases = 2
+    self._pot = 0
     self._player = Player()
     self._dealer = Dealer()
 
@@ -127,4 +128,16 @@ class Holdem(Table):
         print("Turn:\t", self.__community[3])
         if num_cards == 5:
           print("River:\t", self.__community[-1])
+
+  def fill_pot(self, amount):
+    self._pot += self._player.send_bet(amount)
+    self._pot += self._dealer.send_bet(amount)
+
+  def betting_phase(self):
+    current_bet = 0
+    #eventually we could have a list of players,
+    #we could just go through the list calling their bet fctns here
+    current_bet = self._player.bet(current_bet)
+    current_bet = self._dealer.bet(current_bet)
+    fill_pot(current_bet)
 
