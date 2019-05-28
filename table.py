@@ -36,6 +36,7 @@ class Table:
   def reset(self):
     self._dealer.retrieve_cards(self._player.put_back_hand())
     self._dealer.retrieve_cards(self._dealer.put_back_hand())
+    self._pot = 0
 
   # Displays player
   def display_player(self):
@@ -55,10 +56,12 @@ class Table:
     dealer_rank = self._dealer.get_rank()
     if player_rank > dealer_rank:
       print("Player wins")
+      return self._player
     elif player_rank < dealer_rank:
       print("Dealer wins")
+      return self._dealer
     else:
-      self.__tie_breaker()
+      return self.__tie_breaker()
 
   # Breaks the tie between player and dealer
   def __tie_breaker(self):
@@ -69,10 +72,10 @@ class Table:
     for p,d in zip(player_hand, dealer_hand):
       if p > d:
         print("Player wins")
-        return
+        return self._player
       elif p < d:
         print("Dealer wins")
-        return
+        return self._dealer
     print("It's a Tie")
 
 # Holdem class, is a Table
@@ -105,7 +108,11 @@ class Holdem(Table):
 
   def winner_phase(self):
     self.display_table(show_dealer=True)
-    self.winner()
+    winning_player = self.winner()
+    if (winning_player == self._player):
+      self._player._money += self._pot
+    else:
+      self._dealer._money += self._pot
 
   # Update community function
   def update_community(self,n):
@@ -135,9 +142,17 @@ class Holdem(Table):
 
   def betting_phase(self):
     current_bet = 0
-    #eventually we could have a list of players,
-    #we could just go through the list calling their bet fctns here
-    current_bet = self._player.bet(current_bet)
-    current_bet = self._dealer.bet(current_bet)
+    final_bet = 0
+    betting = 1
+    while (betting == 1):
+      current_bet = self._player.bet(current_bet)
+      if (self._player.state == allIn):
+        betting = 0
+      else:
+        current_bet = self._dealer.bet(current_bet)
+      if ((current_bet <= final_bet) or (self._dealer.state == allIn)):
+        betting = 0
+      else:
+        final_bet = current_bet 
     fill_pot(current_bet)
 

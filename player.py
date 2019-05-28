@@ -1,11 +1,17 @@
 from calc import Calc
 from deck import Deck
 
+#Player States
+playing = 0
+allIn = 1
+folded = 2
+
 class Player:
   def __init__(self, start_money):
-    self._hand = []          # list of cards
+    self._hand = []       # list of cards
     self._brain = Calc()  # used to eval hand value
     self._money = start_money
+    self.state = playing 
 
   def __str__(self):
     player_hand = "Player:\t " + " ".join(str(c) for c in self._hand) + "\n"
@@ -38,15 +44,21 @@ class Player:
     return str(self._brain)
 
   def bet(self, current_bet):
-    if ((2*current_bet) > self._money):
-      return current_bet
-    return (2*current_bet)
-    #I don't actually know how to get user input in py
-    #The wiki says raises usually are 2x so for now, if
-    #they can't raise 2x, they fold (ret current_bet)
+    new_bet = int(input("Bet amount: "))
+    if (new_bet == current_bet):
+      print("\nCall!\n")
+    if (new_bet >= self._money):
+      print("\nAll-in!\n")
+      current_bet = self._money
+      self.state = allIn
+    elif (new_bet <= 0):
+      print("\nFold!\n")
+      self.state = folded
+      #folds should be handled by while loop check to see if the bet has changed
+    return current_bet
 
   def send_bet(self, amount):
-    if (amount > self._money):
+    if ((amount > self._money) or (self.state == folded)):
       return 0
     self._money -= amount
     return amount
