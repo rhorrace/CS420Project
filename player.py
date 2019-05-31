@@ -22,6 +22,9 @@ class Player:
     self._hand.extend(card)
     self._brain.add_cards(card)
 
+  def discard(self, index):
+    self._hand.remove(index)
+
   def get_hand(self):
     return self._hand
 

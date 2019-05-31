@@ -78,6 +78,37 @@ class Table:
         return self._dealer
     print("It's a Tie")
 
+# 5draw, 5-card draw game, is a table.
+class 5draw(Table):
+  def __init__(self):
+    super().__init__()
+    self._player_discards = []
+    self._dealer_discards = []
+ 
+  def play(self):
+    if self._phase == 0: self.deal_phase()
+    elif self._phase == 1: self.discard_phase()
+    else:
+      self.winner_phase()
+      self.reset()
+    self._phase = self._phase+1
+
+  def discard_phase(self):
+    for i in self._player_discards:
+      index_to_remove = self._player_discards[i]
+      #I realize this will be wrong. Gotta go by card type/name, not index.
+      self._player.discard(index_to_remove)
+      self._player.receive(self._dealer.deal(1))
+    for i in self._dealer_discards:
+      index_to_remove = self._dealer_discards[i]
+      self._dealer.discard(index_to_remove)
+      self._dealer.receive(self._dealer.deal(1))
+
+    # leaving ^^ for now, but I figure what I'll do is get the indexes from user,
+    # get the cards names at those indexes from the hands
+    # remove the cards with those names in the hands. 
+    # that avoids removing the wrong cards    
+  
 # Holdem class, is a Table
 class Holdem(Table):
   def __init__(self, max_hand=2):
