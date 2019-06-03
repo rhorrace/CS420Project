@@ -74,6 +74,41 @@ class Table:
         return
     print("It's a Tie")
 
+# 5draw, 5-card draw game, is a table.
+class 5draw(Table):
+  def __init__(self):
+    super().__init__()
+    self._player_discards = []
+    self._dealer_discards = []
+ 
+  def play(self):
+    if self._phase == 0: self.deal_phase()
+    elif self._phase == 1: self.discard_phase()
+    else:
+      self.winner_phase()
+      self.reset()
+    self._phase = self._phase+1
+
+  def player_discards(self, card_indices):
+    for i in card_indices:
+      self._player_discards.append(self._player.hand[card_indices[i]])
+
+  def dealer_discards(self, card_indices):
+    for i in card_indices:
+      self._dealer_discards.append(self._dealer.hand[card_indices[i]])
+
+  def discard_phase(self):
+    for i in self._player_discards:
+      for j in self._player.hand:
+        if (self._player_discards[i] == self._player.hand[j]):
+          self._player.discard(j)
+          self._player.receive(self._dealer.deal(1))
+    for i in self._dealer_discards:
+      for j in self._dealer.hand:
+        if (self._dealer_discards[i] == self._dealer.hand[j]):
+          self._dealer.discard(j)
+          self._dealer.receive(self._dealer.deal(1))
+
 # Holdem class, is a Table
 class Holdem(Table):
   def __init__(self, max_hand=2):

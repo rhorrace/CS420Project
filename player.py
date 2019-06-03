@@ -18,6 +18,9 @@ class Player:
   def get_hand(self):
     return self._hand
 
+  def discard(self, index):
+    self._hand.remove(index)
+
   def put_back_hand(self):
     putback = self._hand.copy()
     self._hand = []
