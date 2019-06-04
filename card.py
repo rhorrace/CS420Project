@@ -14,10 +14,6 @@ class Card:
   def display(self):
     print(self.as_string())
 
-  # Converts Card to string
-  def as_string(self):
-    return self.__name + ":" + self.__suit
-
   # Get Card name
   def get_name(self):
     return self.__name
