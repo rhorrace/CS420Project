@@ -92,7 +92,7 @@ class Calc:
     self.__suits = [card.get_suit() for card in self.__cards]
     self.__mode_suit()
     suit_count = self.__suits.count(self.__suits[0])
-    return True if suit_count >= 5 else False
+    return suit_count >= 5
 
   def __mode_suit(self):
     self.__suits = sorted(self.__suits)

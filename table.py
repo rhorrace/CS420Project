@@ -97,7 +97,7 @@ class Holdem(Table):
       self._reset()
     self._phase = (self._phase + 1) % self._phases
 
-  def winner_phase(self):
+  def _winner_phase(self):
     self.__display_table(show_dealer=True)
     self._winner()
 
