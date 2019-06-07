@@ -28,6 +28,14 @@ class Player:
   def get_hand(self):
     return self._hand
 
+  def discard(self, to_discard):
+    discarded_cards = [crd for crd in self._hand if str(crd) in to_discard]
+    discarded = [str(crd) for crd in discarded_cards]
+    self._hand = [crd for crd in self._hand if str(crd) not in discarded]
+    self._brain.clear()
+    self._brain.add_cards(self._hand)
+    return discarded_cards
+
   def put_back_hand(self):
     putback = self._hand.copy()
     self._hand = []
