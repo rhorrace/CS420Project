@@ -2,6 +2,7 @@ from card import Card
 from player import Player, Dealer
 import numpy as np
 
+# Table class
 class Table:
   # initialize
   def __init__(self, max_hand=5, phases=2):
@@ -11,21 +12,25 @@ class Table:
     self._player = Player()
     self._dealer = Dealer()
 
+  # play function
   def play(self):
-    if self._phase == 0: self.deal_phase()
+    if self._phase == 0: self._deal_phase()
     elif self._phase == 1: self.display_player()
     else:
       self.winner_phase()
       self._reset()
     self._phase = (self._phase + 1) % self._phases
 
+  # Get phase function
   def get_phase(self):
     return self._phase
 
+  # Deal phase function
   def _deal_phase(self):
     self._deal_players()
     self._display_player()
 
+  # Winner phase
   def _winner_phase(self):
     self._display_player()
     self._display_dealer()
@@ -37,6 +42,7 @@ class Table:
        self._player.receive(self._dealer.deal(1))
        self._dealer.receive(self._dealer.deal(1))
 
+  # Reset table
   def _reset(self):
     self._dealer.retrieve_cards(self._player.put_back_hand())
     self._dealer.retrieve_cards(self._dealer.put_back_hand())
@@ -78,6 +84,7 @@ class Table:
 
 # Holdem class, is a Table
 class Holdem(Table):
+  # Initialize function
   def __init__(self, max_hand=2):
     super().__init__(max_hand, phases=5)
     self.__community = []
@@ -88,6 +95,7 @@ class Holdem(Table):
     self._dealer.retrieve_cards(self.__community)
     self.__community = []
 
+  # Play function (override)
   def play(self):
     if self._phase == 0: self._deal_phase()
     elif self._phase == 1: self.__community_phase(3)
@@ -97,10 +105,12 @@ class Holdem(Table):
       self._reset()
     self._phase = (self._phase + 1) % self._phases
 
+  # Winner phase fucntion (override)
   def _winner_phase(self):
     self.__display_table(show_dealer=True)
     self._winner()
 
+  # Community phase function
   def __community_phase(self, n):
     self._dealer.burn()
     self.__update_community(n)
@@ -119,6 +129,7 @@ class Holdem(Table):
     if show_dealer:
       self._display_dealer()
 
+  # Display community function
   def __display_community(self):
     num_cards = len(self.__community)
     if num_cards >= 3:
@@ -130,11 +141,13 @@ class Holdem(Table):
 
 # FiveDraw class, 5-card draw game, is a table.
 class FiveDraw(Table):
+  # Initialize function
   def __init__(self):
     super().__init__(phases=3)
     self.__player_amount = 0
     self.__dealer_amount = 0
 
+  # Play function (override)
   def play(self):
     if self._phase == 0: self._deal_phase()
     elif self._phase == 1:
@@ -146,11 +159,13 @@ class FiveDraw(Table):
       self._reset()
     self._phase = (self._phase + 1) % self._phases
 
+  # Draw phase
   def draw(self, amount=0, cards=[]):
     if amount > 0:
       self.__player_draw(amount, cards)
     self.__dealer_draw()
 
+  # Player draw function
   def __player_draw(self, amount, cards):
     discarded = self._player.discard(cards)
     amount = min(len(discarded), amount)
@@ -158,6 +173,7 @@ class FiveDraw(Table):
     self._dealer.retrieve_cards(discarded)
     self.__player_amount = amount
 
+  # Dealer draw phase
   def __dealer_draw(self):
     amount = np.random.randint(0,6)
     if amount == 0: return

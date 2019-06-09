@@ -34,17 +34,20 @@ def play_five_card(game):
 
 
 if __name__ == "__main__":
+  game = None
   print("1) Texas Hold'em")
   print("2) 5-Card draw")
   print("Q) Quit")
   while True:
-    choice = input("Enter Choice: ")
-    if choice == "q" or choice == "Q":
+    choice = input("Enter Choice: ").upper()
+    if choice == "Q":
       break
     elif choice.isdigit() and int(choice) > 0 and int(choice) < 3:
       break
   if choice == "1":
-    play_holdem(Holdem())
+    game = Holdem()
+    play_holdem(game)
   elif choice == "2":
-    play_five_card(FiveDraw())
+    game = FiveDraw()
+    play_five_card(game)
   print("Goodbye!")

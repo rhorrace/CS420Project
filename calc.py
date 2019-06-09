@@ -1,5 +1,6 @@
 from card import Card
 
+# Calculate hand class
 class Calc:
   def __init__(self, cards=[]):
     self.__cards = []
@@ -8,19 +9,23 @@ class Calc:
     self.__ranks = {1:"HighCard", 2:"OnePair", 3:"TwoPair", 4:"ThreeOfKind", 5:"Straight", 6:"Flush", 7:"FullHouse", 8:"FourOfKind", 9:"StraightFlush", 10:"RoyalFlush"}
     if cards: self.add_cards(cards)
 
+  # String function
   def __str__(self):
     best = self.best_hand()
     hand_string = " ".join(str(c) for c in best)
     return self.__ranks[self.__rank] + ":\t" + hand_string
 
+  # Clear function
   def clear(self):
     self.__cards = []
     self.__suits = []
     self.__rank = 1
 
+  # Get rank function
   def get_rank(self):
     return self.__rank
 
+  # Add cards to calc function
   def add_cards(self, cards):
     if not self.__cards:
       self.__cards = cards
@@ -31,6 +36,7 @@ class Calc:
     if not self.__rank in [5,9,10]:
       self.__cards = sorted(self.__cards, key=self.__cards.count, reverse=True)
 
+  # Get best overall hand function
   def best_hand(self):
     if not self.__cards: return []
     hand = []
@@ -39,9 +45,10 @@ class Calc:
       hand = self.__get_straight(filtered) if self.__rank != 6 else filtered[:5]
     elif self.__rank == 5:
       hand = self.__get_straight(self.__cards)
-    else: hand = self.get_other()
+    else: hand = self.__get_other()
     return hand
 
+  # Get straight function
   def __get_straight(self, cards):
     straight = []
     filtered = list(dict.fromkeys(cards))
@@ -57,7 +64,8 @@ class Calc:
         straight = [card]
     return []
 
-  def get_other(self):
+  # Get other best overall hand + kicker
+  def __get_other(self):
     hand, kicker = [], []
     if self.__rank == 8 or self.__rank == 3:
       hand, kicker = self.__cards[:4], sorted(self.__cards[4:], reverse=True)[:1]
@@ -69,6 +77,7 @@ class Calc:
       hand = self.__cards[:5]
     return hand + kicker
 
+  # Calculate hand rank function
   def __calculate_rank(self):
     num_cards = len(self.__cards)
     if not self.__cards:
@@ -88,16 +97,19 @@ class Calc:
     else:
       self.__is_other(num_cards)
 
+  # If flush function
   def __is_flush(self):
     self.__suits = [card.get_suit() for card in self.__cards]
     self.__mode_suit()
     suit_count = self.__suits.count(self.__suits[0])
     return suit_count >= 5
 
+  # Most occuring suit function
   def __mode_suit(self):
     self.__suits = sorted(self.__suits)
     self.__suits = sorted(self.__suits, key=self.__suits.count, reverse=True)
 
+  # Is straight function
   def __is_straight(self, cards):
     all_possible = list(dict.fromkeys(cards))
     if all_possible[0].is_a("A"):
@@ -106,15 +118,13 @@ class Calc:
     prev = all_possible[0]
     count = 1
     for card in all_possible[1:]:
-      count = self.__count(card, prev, count)
+      count = count + 1 if card.get_value() == prev.get_value() - 1 else 1
       if count == 5:
         return True
       prev = card
     return False
 
-  def __count(self, card1, card2, count):
-    return count+1 if (card1.get_value() == card2.get_value()-1) else 1
-
+  # Is other hand function
   def __is_other(self, num_cards):
     cards = sorted(self.__cards, key=self.__cards.count, reverse=True)
     new_rank = 1

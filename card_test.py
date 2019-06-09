@@ -1,6 +1,7 @@
 import unittest
 from card import Card
 
+# Unit test for Card class
 class CardTest(unittest.TestCase):
   def test_is_a(self):
     test_card = Card("A", "H", 14)

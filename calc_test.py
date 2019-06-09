@@ -2,6 +2,7 @@ import unittest
 from calc import Calc
 from card import Card
 
+# Unit tests for Calc class
 class CalcTest(unittest.TestCase):
   def test_str(self):
     test_calc = Calc()
